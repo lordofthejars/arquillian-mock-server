@@ -25,6 +25,7 @@ public class ArchiveAppender implements AuxiliaryArchiveAppender {
                 .addClass(WiserResource.class)
                 .addClass(WiserMessagesTestEnricher.class)
                 .addPackage(DeploymentInfo.class.getPackage())
+                .addClass(WiserConfiguration.class)
                 .addAsServiceProvider(RemoteLoadableExtension.class, WiserRemoteExtension.class)
                 ;
         

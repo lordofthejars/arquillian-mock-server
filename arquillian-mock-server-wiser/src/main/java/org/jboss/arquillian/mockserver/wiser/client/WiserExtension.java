@@ -13,7 +13,10 @@ public class WiserExtension implements LoadableExtension {
         builder.service(AuxiliaryArchiveAppender.class, ArchiveAppender.class);
         builder.service(ApplicationArchiveProcessor.class, ArchiveProcessor.class);
         
+        builder.observer(WiserConfigurator.class);
         builder.observer(WiserDeployer.class);
+        
+        
         builder.service(TestEnricher.class, WiserResourceTestEnricher.class);
         builder.service(TestEnricher.class, WiserMessagesTestEnricher.class);
     }
