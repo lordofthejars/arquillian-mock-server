@@ -20,8 +20,8 @@ import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.arquillian.mockserver.common.api.DeploymentInfo;
 import org.jboss.arquillian.mockserver.wiser.api.WiserEmailMessage;
-import org.jboss.arquillian.mockserver.wiser.api.WiserConnection;
 import org.jboss.arquillian.mockserver.wiser.api.WiserMessages;
+import org.jboss.arquillian.mockserver.wiser.api.WiserConnection;
 import org.jboss.arquillian.mockserver.wiser.api.WiserResource;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.asset.EmptyAsset;
@@ -40,8 +40,8 @@ public class MockServerExtensionTestCase {
     @WiserResource
     DeploymentInfo wiserHostPort;
 
-    @WiserMessages
-    WiserConnection wiserConnection;
+    @WiserConnection
+    WiserMessages wiserConnection;
     
     @Test
     public void should_send_email_to_wiser() throws IOException {

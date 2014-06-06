@@ -10,8 +10,8 @@ import org.jboss.arquillian.core.api.Instance;
 import org.jboss.arquillian.core.api.annotation.Inject;
 import org.jboss.arquillian.mockserver.common.ReflectionHelper;
 import org.jboss.arquillian.mockserver.common.api.DeploymentInfo;
-import org.jboss.arquillian.mockserver.wiser.api.WiserConnection;
 import org.jboss.arquillian.mockserver.wiser.api.WiserMessages;
+import org.jboss.arquillian.mockserver.wiser.api.WiserConnection;
 import org.jboss.arquillian.test.spi.TestEnricher;
 
 public class WiserMessagesTestEnricher implements TestEnricher {
@@ -21,12 +21,12 @@ public class WiserMessagesTestEnricher implements TestEnricher {
     
     @Override
     public void enrich(Object testCase) {
-        List<Field> mockFields = ReflectionHelper.getFieldsWithAnnotation(testCase.getClass(), WiserMessages.class);
+        List<Field> mockFields = ReflectionHelper.getFieldsWithAnnotation(testCase.getClass(), WiserConnection.class);
 
         for (Field mockField : mockFields) {
             try {
-                Object value = new WiserConnection(getWiserUrl());
-                if (WiserConnection.class.isAssignableFrom(mockField.getType())) {
+                Object value = new WiserMessages(getWiserUrl());
+                if (WiserMessages.class.isAssignableFrom(mockField.getType())) {
                     if (!mockField.isAccessible()) {
                         mockField.setAccessible(true);
                     }
