@@ -8,6 +8,7 @@ import java.io.IOException;
 import java.util.List;
 
 import javax.ejb.EJB;
+import javax.mail.MessagingException;
 
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
@@ -40,7 +41,7 @@ public class MockServerExtensionTestCase {
     SmtpMailService smtpMailService;
     
     @Test
-    public void should_send_email_to_wiser() throws IOException {
+    public void should_send_email_to_wiser() throws IOException, MessagingException {
 
         smtpMailService.sendEmail(wiserHostPort.getHost(), wiserHostPort.getPort());
 
@@ -49,8 +50,8 @@ public class MockServerExtensionTestCase {
         
         assertThat(message.getEnvelopeReceiver(), is("bb@bb.es"));
         assertThat(message.getEnvelopeSender(), is("aa@aa.es"));
-        assertThat(new String(message.getMessage()), containsString("Subject: This is the Subject Line!"));
-        assertThat(new String(message.getMessage()), containsString("This is actual message"));
+        assertThat(message.getMessage().getSubject(), containsString("This is the Subject Line!"));
+        assertThat((String)message.getMessage().getContent(), containsString("This is actual message"));
         
     }
 }

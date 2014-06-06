@@ -1,6 +1,13 @@
 package org.jboss.arquillian.mockserver.wiser.api;
 
+import java.io.ByteArrayInputStream;
+import java.util.Properties;
+
 import javax.json.JsonObject;
+import javax.mail.Message;
+import javax.mail.MessagingException;
+import javax.mail.Session;
+import javax.mail.internet.MimeMessage;
 
 import org.subethamail.smtp.util.Base64;
 
@@ -9,9 +16,9 @@ public class WiserEmailMessage {
     private String envelopeSender;
     private String envelopeReceiver;
     
-    private byte[] message;
+    private Message message;
 
-    public WiserEmailMessage(String envelopeSender, String envelopeReceiver, byte[] message) {
+    public WiserEmailMessage(String envelopeSender, String envelopeReceiver, Message message) {
         super();
         this.envelopeSender = envelopeSender;
         this.envelopeReceiver = envelopeReceiver;
@@ -26,7 +33,7 @@ public class WiserEmailMessage {
         return envelopeSender;
     }
     
-    public byte[] getMessage() {
+    public Message getMessage() {
         return message;
     }
     
@@ -36,9 +43,20 @@ public class WiserEmailMessage {
         String envelopeReceiver = jsonObject.getString("receiver");
         
         byte[] content = Base64.decode(jsonObject.getString("message"));
+        Message message = transformToMessage(content);
         
-        return new WiserEmailMessage(envelopeSender, envelopeReceiver, content);
+        return new WiserEmailMessage(envelopeSender, envelopeReceiver, message);
         
+    }
+
+    private static Message transformToMessage(byte[] content) {
+        Message message;
+        try {
+            message = new MimeMessage(Session.getDefaultInstance(new Properties()), new ByteArrayInputStream(content));
+        } catch (MessagingException e) {
+            throw new IllegalArgumentException(e);
+        }
+        return message;
     }
     
 }

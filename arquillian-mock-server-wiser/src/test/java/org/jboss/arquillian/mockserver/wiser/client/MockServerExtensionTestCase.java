@@ -44,7 +44,7 @@ public class MockServerExtensionTestCase {
     WiserMessages wiserConnection;
     
     @Test
-    public void should_send_email_to_wiser() throws IOException {
+    public void should_send_email_to_wiser() throws IOException, MessagingException {
 
         sentEmail();
         List<WiserEmailMessage> messages = wiserConnection.messages();
@@ -53,8 +53,8 @@ public class MockServerExtensionTestCase {
         
         assertThat(message.getEnvelopeReceiver(), is("bb@bb.es"));
         assertThat(message.getEnvelopeSender(), is("aa@aa.es"));
-        assertThat(new String(message.getMessage()), containsString("Subject: This is the Subject Line!"));
-        assertThat(new String(message.getMessage()), containsString("This is actual message"));
+        assertThat(message.getMessage().getSubject(), containsString("This is the Subject Line!"));
+        assertThat((String)message.getMessage().getContent(), containsString("This is actual message"));
         
     }
 

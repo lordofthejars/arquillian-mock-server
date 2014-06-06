@@ -8,7 +8,7 @@ import org.jboss.shrinkwrap.resolver.api.maven.Maven;
 
 public class ArchiveProcessor implements ApplicationArchiveProcessor {
 
-    public static final String WISER_ARTIFACT = "org.subethamail:subethasmtp:";
+    public static final String WISER_ARTIFACT = "org.subethamail:subethasmtp:3.1.7";
     
     @Override
     public void process(Archive<?> applicationArchive, TestClass testClass) {
@@ -17,7 +17,7 @@ public class ArchiveProcessor implements ApplicationArchiveProcessor {
             
             LibraryContainer<?> container = (LibraryContainer<?>) applicationArchive;
             container.addAsLibraries(
-                    Maven.resolver().loadPomFromFile("pom.xml")
+                    Maven.resolver()
                     .resolve(WISER_ARTIFACT)
                     .withTransitivity()
                     .asFile());
