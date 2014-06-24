@@ -6,11 +6,11 @@
         <artifactId>arquillian-mock-server</artifactId>
         <version>0.0.1-SNAPSHOT</version>
     </parent>
-    <artifactId>arquillian-mock-server-wiser</artifactId>
+    <artifactId>arquillian-mock-server-moco</artifactId>
 
     <properties>
-        <subethasmtp.version>3.1.7</subethasmtp.version>
         <json-p.version>1.0.4</json-p.version>
+        <mockserver.version>3.0</mockserver.version>
     </properties>
 
     <dependencies>
@@ -22,15 +22,16 @@
         </dependency>
 
         <dependency>
-            <groupId>org.subethamail</groupId>
-            <artifactId>subethasmtp</artifactId>
-            <version>${subethasmtp.version}</version>
+            <groupId>org.mock-server</groupId>
+            <artifactId>mockserver-netty</artifactId>
+            <version>2.10</version>
         </dependency>
 
         <dependency>
             <groupId>org.glassfish</groupId>
             <artifactId>javax.json</artifactId>
             <version>${json-p.version}</version>
+            <scope>test</scope>
         </dependency>
 
     </dependencies>

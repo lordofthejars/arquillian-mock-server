@@ -11,7 +11,6 @@ public class WiserExtension implements LoadableExtension {
     public void register(ExtensionBuilder builder)   {
         
         builder.service(AuxiliaryArchiveAppender.class, ArchiveAppender.class);
-        builder.service(ApplicationArchiveProcessor.class, ArchiveProcessor.class);
         
         builder.observer(WiserConfigurator.class);
         builder.observer(WiserDeployer.class);

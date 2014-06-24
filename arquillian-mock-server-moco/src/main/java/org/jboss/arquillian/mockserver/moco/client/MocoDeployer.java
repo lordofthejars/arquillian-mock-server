@@ -1,4 +1,4 @@
-package org.jboss.arquillian.mockserver.wiser.client;
+package org.jboss.arquillian.mockserver.moco.client;
 
 import java.util.Collection;
 
@@ -10,47 +10,47 @@ import org.jboss.arquillian.container.spi.client.protocol.metadata.HTTPContext;
 import org.jboss.arquillian.container.spi.client.protocol.metadata.ProtocolMetaData;
 import org.jboss.arquillian.container.spi.event.container.AfterDeploy;
 import org.jboss.arquillian.container.spi.event.container.AfterUnDeploy;
+import org.jboss.arquillian.container.spi.event.container.BeforeStop;
 import org.jboss.arquillian.core.api.Instance;
 import org.jboss.arquillian.core.api.InstanceProducer;
 import org.jboss.arquillian.core.api.annotation.ApplicationScoped;
 import org.jboss.arquillian.core.api.annotation.Inject;
 import org.jboss.arquillian.core.api.annotation.Observes;
 import org.jboss.arquillian.mockserver.common.api.DeploymentInfo;
-import org.jboss.arquillian.mockserver.wiser.api.HostPortCommand;
-import org.jboss.arquillian.mockserver.wiser.api.WiserResource;
-import org.jboss.arquillian.mockserver.wiser.container.web.SentMessageServlet;
-import org.jboss.arquillian.mockserver.wiser.container.web.WiserInitializer;
+import org.jboss.arquillian.mockserver.moco.api.HostPortCommand;
+import org.jboss.arquillian.mockserver.moco.container.web.MocoInitializer;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.asset.StringAsset;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.jboss.shrinkwrap.resolver.api.maven.Maven;
+import org.jboss.shrinkwrap.resolver.api.maven.ScopeType;
+import org.jboss.shrinkwrap.resolver.api.maven.coordinate.MavenDependencies;
 
-public class WiserDeployer {
+public class MocoDeployer {
 
-    private static final String WEBAPP_NAME = "arquillian-wiser.war";
-    private static final String CONTEXT = "arquillian-wiser";
+    private static final String WEBAPP_NAME = "arquillian-moco.war";
+    private static final String CONTEXT = "arquillian-moco";
 
     private WebArchive deployedApplication;
     private ProtocolMetaData protocolMetaData;
 
     @Inject
     @ApplicationScoped
-    InstanceProducer<DeploymentInfo> wiserHostPortProducer;
+    InstanceProducer<DeploymentInfo> mocoHostPortProducer;
     
     @Inject
-    Instance<WiserConfiguration> wiserConfiguration;
+    Instance<MocoConfiguration> mocoConfiguration;
 
-    public void wiserHostPort(@Observes HostPortCommand wiserHostPortEvent) {
-        wiserHostPortEvent.setResult(wiserHostPortProducer.get());
+    public void mcoHostPort(@Observes HostPortCommand wiserHostPortEvent) {
+        wiserHostPortEvent.setResult(mocoHostPortProducer.get());
     }
 
     public void executeBeforeDeploy(@Observes AfterDeploy event) throws DeploymentException {
-        JavaArchive[] wiserDependencies = Maven.resolver()
-                .resolve("org.subethamail:subethasmtp:3.1.7").withTransitivity().as(JavaArchive.class);
+        
 
         this.deployedApplication = resolveMockServerArchive(
-                org.jboss.arquillian.mockserver.wiser.container.web.WiserInitializer.class, wiserDependencies);
+                MocoInitializer.class);
 
         DeployableContainer<?> deployableContainer = event.getDeployableContainer();
         this.protocolMetaData = deployableContainer.deploy(this.deployedApplication);
@@ -60,16 +60,16 @@ public class WiserDeployer {
         if (contexts != null && contexts.size() > 0) {
 
             HTTPContext httpContext = contexts.iterator().next();
-            DeploymentInfo wiserHostPort = new DeploymentInfo(httpContext.getHost(),
-                    wiserConfiguration.get().getPort(), CONTEXT,
+            DeploymentInfo mocoHostPort = new DeploymentInfo(httpContext.getHost(),
+                    mocoConfiguration.get().getPort(), CONTEXT,
                     httpContext.getPort());
-            this.wiserHostPortProducer.set(wiserHostPort);
+            this.mocoHostPortProducer.set(mocoHostPort);
 
         }
 
     }
 
-    public void executeAfterUnDeploy(@Observes AfterUnDeploy event) throws DeploymentException {
+    public void executeAfterUnDeploy(@Observes BeforeStop event) throws DeploymentException {
 
         DeployableContainer<?> deployableContainer = event.getDeployableContainer();
         deployableContainer.undeploy(this.deployedApplication);
@@ -79,15 +79,17 @@ public class WiserDeployer {
     private WebArchive resolveMockServerArchive(Class<? extends ServletContextListener> initializer,
             JavaArchive... libs) {
         
-        WebArchive webArchive = ShrinkWrap.create(WebArchive.class, WEBAPP_NAME).addClass(WiserInitializer.class)
-                .addClass(SentMessageServlet.class).addClass(WiserResource.class).addClass(WiserConfiguration.class).addAsLibraries(libs);
+        WebArchive mockServer = Maven.configureResolver().withRemoteRepo("sonatype-nexus-snapshots", "https://oss.sonatype.org/content/repositories/snapshots", "default")
+                .resolve("org.mock-server:mockserver-war:war:3.1-SNAPSHOT").withoutTransitivity().asSingle(WebArchive.class);
         
-        WiserConfiguration configuration = wiserConfiguration.get();
-        if(configuration != null) {
-            webArchive.addAsResource(new StringAsset(configuration.toProperties()), WiserConfiguration.WISER_PROPERTIES_FILENAME);
-        }
+        return mockServer;
         
-        return webArchive;
+        /*WebArchive webArchive = ShrinkWrap.create(WebArchive.class, WEBAPP_NAME).addClass(initializer).addClass(MocoConfiguration.class).addAsLibraries(libs);
+        
+        webArchive.addAsResource(new StringAsset(mocoConfiguration.get().toProperties()), MocoConfiguration.MOCO_PROPERTIES_FILENAME);
+        
+        return webArchive;*/
     }
-
+    
+    
 }

@@ -10,7 +10,7 @@ import org.jboss.arquillian.core.api.annotation.Inject;
 import org.jboss.arquillian.core.spi.ServiceLoader;
 import org.jboss.arquillian.mockserver.common.ReflectionHelper;
 import org.jboss.arquillian.mockserver.common.api.DeploymentInfo;
-import org.jboss.arquillian.mockserver.wiser.WiserHostPortCommand;
+import org.jboss.arquillian.mockserver.wiser.api.HostPortCommand;
 import org.jboss.arquillian.mockserver.wiser.api.WiserResource;
 import org.jboss.arquillian.test.spi.TestEnricher;
 
@@ -46,8 +46,8 @@ public class WiserResourceTestEnricherByCommand implements TestEnricher {
     }
 
     private DeploymentInfo getWiserHostPort() {
-        WiserHostPortCommand wiserHostPortCommand = new WiserHostPortCommand();
-        return getCommandService().execute(wiserHostPortCommand);
+        HostPortCommand hostPortCommand = new HostPortCommand();
+        return getCommandService().execute(hostPortCommand);
     }
 
     private CommandService getCommandService() {

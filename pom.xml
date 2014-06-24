@@ -13,7 +13,7 @@
 
     <properties>
         <version.arquillian>1.1.4.Final</version.arquillian>
-        <version.shrinkwrap>2.0.0</version.shrinkwrap>
+        <version.shrinkwrap>2.1.1</version.shrinkwrap>
         <version.junit>4.11</version.junit>
         <version.tomee>1.6.0</version.tomee>
         <version.wildfly>8.0.0.Final</version.wildfly>
@@ -171,5 +171,7 @@
     <modules>
         <module>arquillian-mock-server-common</module>
         <module>arquillian-mock-server-wiser</module>
+        <module>arquillian-mock-server-moco</module>
+        <module>arquillian-mock-server-fakeftp</module>
     </modules>
 </project>
